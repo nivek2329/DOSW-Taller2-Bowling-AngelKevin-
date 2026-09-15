@@ -3,7 +3,6 @@ package edu.eci.dosw.bowling;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class BowlingGame {
 
     private static final int MIN_PINS = 0;
@@ -17,10 +16,12 @@ public class BowlingGame {
         this.currentFrame = 0;
     }
 
- 
     public void roll(int pins) {
         validatePinRange(pins);
-
+        if (frames.isEmpty()) {
+            frames.add(new Frame());
+        }
+        frames.get(frames.size() - 1).addRoll(pins);
     }
 
     private void validatePinRange(int pins) {
@@ -30,15 +31,11 @@ public class BowlingGame {
         }
     }
 
-
     public int score() {
- 
         return 0;
     }
 
-
     public boolean isComplete() {
-   
         return false;
     }
 
