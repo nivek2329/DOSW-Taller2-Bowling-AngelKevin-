@@ -3,6 +3,7 @@ package edu.eci.dosw.bowling;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -72,5 +73,23 @@ class BowlingGameTest {
         game.roll(5);
 
         assertEquals(FrameType.SPARE, game.getFrames().get(0).getType());
+    }
+
+    @Test
+    @DisplayName("Frame 10 con strike acepta hasta 3 tiros sin lanzar excepcion")
+    void tenthFrameWithStrike_acceptsThreeRolls() {
+        BowlingGame game = new BowlingGame();
+        for (int i = 0; i < 18; i++) {
+            game.roll(0);
+        }
+
+        assertDoesNotThrow(() -> {
+            game.roll(10);
+            game.roll(10);
+            game.roll(10);
+        });
+
+        assertEquals(10, game.getFrames().size());
+        assertEquals(3, game.getFrames().get(9).getRolls().size());
     }
 }
