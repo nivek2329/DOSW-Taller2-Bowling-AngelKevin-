@@ -30,7 +30,19 @@ public class Frame {
         this.type = type;
     }
 
+
     public boolean isFull() {
+        if (type == FrameType.TENTH) {
+            if (rolls.size() < 2) {
+                return false;
+            }
+            if (rolls.size() == 2) {
+                boolean strike = rolls.get(0) == 10;
+                boolean spare = !strike && (rolls.get(0) + rolls.get(1) == 10);
+                return !(strike || spare);
+            }
+            return true;
+        }
         if (type == FrameType.STRIKE) {
             return true;
         }

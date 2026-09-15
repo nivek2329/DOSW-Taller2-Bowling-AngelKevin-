@@ -3,10 +3,12 @@ package edu.eci.dosw.bowling;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class BowlingGame {
 
     private static final int MIN_PINS = 0;
     private static final int MAX_PINS = 10;
+    private static final int TOTAL_FRAMES = 10;
 
     private final List<Frame> frames;
     private int currentFrame;
@@ -16,27 +18,37 @@ public class BowlingGame {
         this.currentFrame = 0;
     }
 
+
     public void roll(int pins) {
         validatePinRange(pins);
         if (frames.isEmpty() || frames.get(frames.size() - 1).isFull()) {
-            frames.add(new Frame());
+            Frame newFrame = new Frame();
+            if (frames.size() == TOTAL_FRAMES - 1) {
+                newFrame.setType(FrameType.TENTH);
+            }
+            frames.add(newFrame);
         }
+
         Frame current = frames.get(frames.size() - 1);
+
         if (current.getRolls().size() == 1) {
             int firstRoll = current.getRolls().get(0);
-            if (firstRoll + pins > MAX_PINS) {
+            if (firstRoll != MAX_PINS && firstRoll + pins > MAX_PINS) {
                 throw new IllegalArgumentException(
                     "La suma de los dos tiros del frame no puede superar " + MAX_PINS);
             }
         }
+
         current.addRoll(pins);
 
-        if (current.getRolls().size() == 1 && pins == MAX_PINS) {
-            current.setType(FrameType.STRIKE);
-        } else if (current.getRolls().size() == 2 && current.getType() != FrameType.STRIKE) {
-            int sum = current.getRolls().get(0) + current.getRolls().get(1);
-            if (sum == MAX_PINS) {
-                current.setType(FrameType.SPARE);
+        if (current.getType() != FrameType.TENTH) {
+            if (current.getRolls().size() == 1 && pins == MAX_PINS) {
+                current.setType(FrameType.STRIKE);
+            } else if (current.getRolls().size() == 2 && current.getType() != FrameType.STRIKE) {
+                int sum = current.getRolls().get(0) + current.getRolls().get(1);
+                if (sum == MAX_PINS) {
+                    current.setType(FrameType.SPARE);
+                }
             }
         }
     }
@@ -48,11 +60,15 @@ public class BowlingGame {
         }
     }
 
+
     public int score() {
+
         return 0;
     }
 
+
     public boolean isComplete() {
+
         return false;
     }
 
