@@ -63,4 +63,14 @@ class BowlingGameTest {
         assertEquals(FrameType.STRIKE, game.getFrames().get(0).getType());
         assertEquals(2, game.getFrames().size());
     }
+
+    @Test
+    @DisplayName("roll(5) + roll(5) marca el frame como SPARE")
+    void rollFivePlusFive_marksFrameAsSpare() {
+        BowlingGame game = new BowlingGame();
+        game.roll(5);
+        game.roll(5);
+
+        assertEquals(FrameType.SPARE, game.getFrames().get(0).getType());
+    }
 }
