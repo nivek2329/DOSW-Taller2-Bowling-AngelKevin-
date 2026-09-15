@@ -21,7 +21,15 @@ public class BowlingGame {
         if (frames.isEmpty()) {
             frames.add(new Frame());
         }
-        frames.get(frames.size() - 1).addRoll(pins);
+        Frame current = frames.get(frames.size() - 1);
+        if (current.getRolls().size() == 1) {
+            int firstRoll = current.getRolls().get(0);
+            if (firstRoll + pins > MAX_PINS) {
+                throw new IllegalArgumentException(
+                    "La suma de los dos tiros del frame no puede superar " + MAX_PINS);
+            }
+        }
+        current.addRoll(pins);
     }
 
     private void validatePinRange(int pins) {
