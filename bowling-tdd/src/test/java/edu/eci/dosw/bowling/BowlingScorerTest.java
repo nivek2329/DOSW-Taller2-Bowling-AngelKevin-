@@ -46,4 +46,17 @@ class BowlingScorerTest {
 
         assertEquals(0, game.score());
     }
+
+    @Test
+    @DisplayName("Spare en frame 1 suma el bono del primer tiro del frame 2")
+    void spareInFirstFrame_addsBonusFromNextFirstRoll() {
+        BowlingGame game = new BowlingGame();
+        game.roll(5);
+        game.roll(5); 
+        game.roll(3);
+        game.roll(2); 
+        rollMany(game, 16, 0); 
+
+        assertEquals(18, game.score());
+    }
 }
