@@ -40,4 +40,16 @@ class BowlingGameTest {
         assertEquals(1, game.getFrames().size());
         assertEquals(0, game.getFrames().get(0).getRolls().get(0));
     }
+
+    @Test
+    @DisplayName("Dos tiros que suman mas de 10 en el mismo frame lanzan excepcion")
+    void twoRollsExceedingTenInSameFrame_throwsException() {
+        BowlingGame game = new BowlingGame();
+        game.roll(7);
+
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> game.roll(6)
+        );
+    }
 }
