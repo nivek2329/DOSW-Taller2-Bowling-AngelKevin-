@@ -6,6 +6,9 @@ import java.util.List;
 
 public class BowlingGame {
 
+    private static final int MIN_PINS = 0;
+    private static final int MAX_PINS = 10;
+
     private final List<Frame> frames;
     private int currentFrame;
 
@@ -14,21 +17,28 @@ public class BowlingGame {
         this.currentFrame = 0;
     }
 
-   
-        public void roll(int pins) {
-        if (pins < 0) {
-            throw new IllegalArgumentException("El numero de pinos no puede ser negativo: " + pins);
+ 
+    public void roll(int pins) {
+        validatePinRange(pins);
+
+    }
+
+    private void validatePinRange(int pins) {
+        if (pins < MIN_PINS || pins > MAX_PINS) {
+            throw new IllegalArgumentException(
+                "El numero de pinos debe estar entre " + MIN_PINS + " y " + MAX_PINS + ": " + pins);
         }
     }
 
-  
+
     public int score() {
-        // TODO: implementar con TDD
+ 
         return 0;
     }
 
+
     public boolean isComplete() {
-        // TODO: implementar con TDD
+   
         return false;
     }
 
