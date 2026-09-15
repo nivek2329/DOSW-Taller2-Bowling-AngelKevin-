@@ -20,6 +20,9 @@ public class BowlingGame {
 
 
     public void roll(int pins) {
+        if (isComplete()) {
+            throw new IllegalStateException("El juego ya esta completo, no se pueden registrar mas tiros.");
+        }
         validatePinRange(pins);
         if (frames.isEmpty() || frames.get(frames.size() - 1).isFull()) {
             Frame newFrame = new Frame();
@@ -68,8 +71,7 @@ public class BowlingGame {
 
 
     public boolean isComplete() {
-
-        return false;
+        return frames.size() == TOTAL_FRAMES && frames.get(TOTAL_FRAMES - 1).isFull();
     }
 
     public List<Frame> getFrames() { return List.copyOf(frames); }
