@@ -37,4 +37,13 @@ class BowlingScorerTest {
 
         assertEquals(70, game.score());
     }
+
+    @Test
+    @DisplayName("Juego con todos los tiros a 0 anota 0 puntos")
+    void allZeros_scoresZero() {
+        BowlingGame game = new BowlingGame();
+        rollMany(game, 20, 0);
+
+        assertEquals(0, game.score());
+    }
 }
