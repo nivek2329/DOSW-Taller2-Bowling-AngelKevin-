@@ -2,6 +2,7 @@ package edu.eci.dosw.bowling;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -27,5 +28,16 @@ class BowlingGameTest {
             IllegalArgumentException.class,
             () -> game.roll(11)
         );
+    }
+
+    @Test
+    @DisplayName("roll(0) no lanza excepcion y el frame registra 0 pinos")
+    void rollZeroPins_registersZeroInFrame() {
+        BowlingGame game = new BowlingGame();
+
+        game.roll(0);
+
+        assertEquals(1, game.getFrames().size());
+        assertEquals(0, game.getFrames().get(0).getRolls().get(0));
     }
 }
