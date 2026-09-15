@@ -25,4 +25,16 @@ class BowlingScorerTest {
             () -> game.score()
         );
     }
+
+    @Test
+    @DisplayName("Juego sin strikes ni spares suma directamente los pinos derribados")
+    void noStrikesNoSpares_sumsAllPins() {
+        BowlingGame game = new BowlingGame();
+        for (int i = 0; i < 10; i++) {
+            game.roll(3);
+            game.roll(4);
+        }
+
+        assertEquals(70, game.score());
+    }
 }
