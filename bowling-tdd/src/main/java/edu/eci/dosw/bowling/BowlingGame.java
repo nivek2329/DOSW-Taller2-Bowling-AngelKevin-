@@ -16,7 +16,7 @@ public class BowlingGame {
         this.currentFrame = 0;
     }
 
-       public void roll(int pins) {
+    public void roll(int pins) {
         validatePinRange(pins);
         if (frames.isEmpty() || frames.get(frames.size() - 1).isFull()) {
             frames.add(new Frame());
@@ -30,8 +30,14 @@ public class BowlingGame {
             }
         }
         current.addRoll(pins);
+
         if (current.getRolls().size() == 1 && pins == MAX_PINS) {
             current.setType(FrameType.STRIKE);
+        } else if (current.getRolls().size() == 2 && current.getType() != FrameType.STRIKE) {
+            int sum = current.getRolls().get(0) + current.getRolls().get(1);
+            if (sum == MAX_PINS) {
+                current.setType(FrameType.SPARE);
+            }
         }
     }
 
