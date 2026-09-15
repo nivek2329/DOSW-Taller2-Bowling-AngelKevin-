@@ -92,4 +92,18 @@ class BowlingGameTest {
         assertEquals(10, game.getFrames().size());
         assertEquals(3, game.getFrames().get(9).getRolls().size());
     }
+
+    @Test
+    @DisplayName("roll() lanza IllegalStateException si el juego ya esta completo")
+    void rollAfterGameComplete_throwsException() {
+        BowlingGame game = new BowlingGame();
+        for (int i = 0; i < 20; i++) {
+            game.roll(0);
+        }
+
+        assertThrows(
+            IllegalStateException.class,
+            () -> game.roll(0)
+        );
+    }
 }
