@@ -36,9 +36,9 @@ class BowlingScorerTest {
         rollMany(game, 5, 0);
 
         assertThrows(
-            IllegalStateException.class,
-            () -> game.score()
-        );
+    	    IllegalStateException.class,
+            game::score
+	);
     }
 
     @Test
