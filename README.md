@@ -1,186 +1,67 @@
-# \# Taller 2 - Bowling Scoring Engine (TDD)
+# BowlTech
 
-# 
+## 1\. Identificación
 
-# \## 1. Identificación
+- Nombre completo: Angel Kevin
+- Código estudiantil: 1000098372
+- Correo institucional: kevin.angel-a@mail.escuelaing.edu.co
 
-# 
+## 2\. Descripción
 
-# \- \*\*Estudiante:\*\* Angel Kevin
+BowlTech es el motor que calcula el puntaje de una partida de bowling (10 pines). Recibe los tiros uno por uno y al final entrega el puntaje total aplicando las reglas reales del juego: si sumas 10 pinos entre los dos tiros de un frame es spare y el siguiente tiro cuenta doble; si tumbas los 10 pinos de una sola vez es strike y los dos tiros siguientes cuentan como bono; y el frame 10 es especial porque si haces spare o strike ahí te dan un tiro (o dos) extra para poder cobrar el bono.
 
-# \- \*\*Usuario de GitHub:\*\* nivek2329
+Las clases se dividen así:
 
-# \- \*\*Asignatura:\*\* Diseño y Arquitectura de Software (DOSW) - Periodo 2026-2
+- `FrameType`\: solo dice en qué estado va un frame (normal, spare, strike o el frame 10).
+- `Frame`\: guarda los tiros de un frame y sabe decir si ya se llenó.
+- `BowlingGame`\: es la que recibe cada tiro, revisa que sea válido, decide cuándo pasar al siguiente frame y marca cuándo el juego terminó.
+- `BowlingScorer`\: se encarga solo de sumar el puntaje final, mirando los tiros y aplicando los bonos de spare y strike.
 
-# \- \*\*Institución:\*\* Escuela Colombiana de Ingeniería Julio Garavito
+## 3\. Evidencia TDD
 
-# \- \*\*Repositorio:\*\* https://github.com/nivek2329/Bitacora-Dosw-Corte2\_KevinAngel
+Cada funcionalidad se hizo primero escribiendo el test (que falla, RED), después el código mínimo para que pase (GREEN) y luego se refactorizaba si hacía falta. Cada fase quedó en un commit aparte (`test: RED - ...`, `feat: GREEN - ...`, `refactor: ...`). En total quedaron 22 tests, todos pasando.
 
-# \- \*\*Rama de trabajo:\*\* `feature/AngelKevin\_bowling`
+### Ciclo documentado como ejemplo (caso: juego sin strikes ni spares)
 
-# 
+Test `noStrikesNoSpares_sumsAllPins`\: un juego sin ningún strike ni spare debe sumar directamente todos los pinos derribados (10 frames de 3\+4 \= 70 puntos).
 
-# \## 2. Descripción del proyecto
+- **RED:** `docs/evidence/RED-CasoB2.png`, `docs/evidence/RED-CasoB2-2.png` — se rompió temporalmente el cálculo del bono de strike en `BowlingScorer`, y el test falló (`expected: <70> but was: <0>`, `BUILD FAILURE`).
+- **GREEN:** `docs/evidence/GREEN-CasoB2.png`, `docs/evidence/GREEN-CasoB2-2.png` — al revertir el cambio, los 22 tests vuelven a pasar (`Tests run: 22, Failures: 0`, `BUILD SUCCESS`).
+- **REFACTOR:** posteriormente, el método `roll()` de `BowlingGame` se refactorizó (ver sección de SonarQube) sin afectar el resultado de estos tests.
 
-# 
+## 4\. JaCoCo
 
-# Este proyecto implementa un motor de calculo de puntaje para el juego de Bowling (10 pines), desarrollado en Java 24 siguiendo estrictamente la metodologia de Test-Driven Development (TDD) mediante ciclos RED-GREEN-REFACTOR.
+- Antes: `docs/evidence/jacoco-antes.png` — cobertura de 70%, por debajo del mínimo exigido (85%), build en rojo.
+- Después: `docs/evidence/jacoco-final.png` — 99.4% de cobertura, build en verde.
 
-# 
+Las pruebas que más subieron la cobertura fueron las de `BowlingScorerTest`, porque son las que recorren todas las combinaciones del cálculo de puntaje (spare, strike, strikes seguidos, juego perfecto), que es la parte del código con más caminos posibles.
 
-# El sistema soporta las reglas clasicas del bowling: acumulacion normal de pinos por frame, bonos por \*spare\* (suma del siguiente tiro), bonos por \*strike\* (suma de los dos tiros siguientes) y el manejo especial del decimo frame (hasta 3 tiros con reglas de bono).
+## 5\. SonarQube
 
-# 
+`docs/evidence/sonarqube-final.png` — Quality Gate en Passed, 99.4% de cobertura, 0% de duplicación y 0 issues abiertos.
 
-# \### Arquitectura
+Al principio salieron 3 issues (capturado en `docs/evidence/sonarqube-inicial.png`): el método `roll()` estaba muy complejo, había un campo que no se usaba para nada, y un test usaba una lambda donde cabía mejor una referencia a método. Los tres se corrigieron.
 
-# 
+## 6\. Pull Requests
 
-# El diseño se compone de 4 clases principales:
+| Enlace al PR | Fecha de merge | Módulo que cubre |
+| --- | --- | --- |
+| \[enlace al PR\] | \[fecha\] | Implementación completa de BowlTech (dominio, motor de juego, cálculo de puntaje, tests, JaCoCo y SonarQube) |
 
-# 
+## 7\. Reflexión
 
-# \- \*\*`FrameType`\*\*: enum que representa el estado de un frame (`NORMAL`, `SPARE`, `STRIKE`, `TENTH`).
+**¿Qué caso edge fue el más difícil de implementar con TDD y por qué?**
 
-# \- \*\*`Frame`\*\*: representa un frame individual, almacena los tiros registrados y determina si esta completo (`isFull()`).
+El frame 10, sin duda. Es el único que no se comporta como los demás: si haces strike o spare ahí, te ganas un tiro extra (o dos), pero si no, se cierra igual que cualquier otro frame con dos tiros. Me costó porque tocó meter una condición aparte solo para ese frame dentro de `Frame.isFull()`, y necesité varios tests para ir cubriendo cada combinación (strike con dos bonos, spare con uno, frame normal). Ir test por test ayudó a no intentar adivinar toda la lógica de una sola vez.
 
-# \- \*\*`BowlingGame`\*\*: orquesta la partida completa; valida los tiros, gestiona la progresion de frames, detecta strikes/spares y expone `roll()`, `score()` e `isComplete()`.
+**¿Qué parte del código cambió durante REFACTOR sin modificar el comportamiento observable?**
 
-# \- \*\*`BowlingScorer`\*\*: implementa el algoritmo clasico de calculo de puntaje (aplanado de tiros con "look-ahead" para bonos de strike/spare).
+El método `roll()` de `BowlingGame` se partió en tres métodos más pequeños, cada uno haciendo una sola cosa (crear el frame si hace falta, validar el segundo tiro, actualizar si es spare o strike). También se borró un campo que sobraba (`currentFrame`, nunca se leía) y se cambió una lambda por una referencia a método en un test. Los 22 tests siguieron pasando exactamente igual antes y después.
 
-# 
+**¿Qué casos de prueba descubriste al revisar el reporte de cobertura de JaCoCo que no habías considerado antes?**
 
-# \## 3. Evidencia TDD
+En realidad no aparecieron huecos nuevos: el reporte mostró 100% de líneas y 98% de ramas cubiertas solo con los 22 casos que pedía el taller. Lo que sí me sirvió fue confirmar que cosas como la validación de pinos fuera de rango o la excepción al pedir el puntaje de un juego incompleto ya estaban probadas, sin haberlo notado tan claramente antes de ver el reporte.
 
-# 
+**¿Qué hallazgo de SonarQube produjo un cambio real en el código?**
 
-# El desarrollo se realizo en ciclos estrictos \*\*RED -> GREEN -> REFACTOR\*\*, con un commit de Git independiente por cada fase, usando los prefijos:
-
-# 
-
-# \- `test: RED - ...` (prueba que falla)
-
-# \- `feat: GREEN - ...` (implementacion minima que la hace pasar)
-
-# \- `refactor: ...` (mejora del diseño sin cambiar el comportamiento)
-
-# 
-
-# \### Casos de prueba implementados (22 en total)
-
-# 
-
-# | Modulo | Archivo de test | Casos | Descripcion |
-
-# |---|---|---|---|
-
-# | A | `BowlingGameTest.java` | A1 - A8 | Validacion de rango de pinos, progresion de frames, deteccion de strike/spare, suma maxima por frame, excepcion al jugar sobre juego completo |
-
-# | B | `BowlingScorerTest.java` | B1 - B8 | Calculo de puntaje: sin bonos, ceros, spare, strike, strikes consecutivos, todos spares, juego perfecto (300), excepcion si el juego no esta completo |
-
-# | C | `BowlingGameTest.java` | C1 - C6 | Deteccion de finalizacion del juego (`isComplete()`) en distintos escenarios del decimo frame |
-
-# 
-
-# Todos los tests pasan (`Tests run: 22, Failures: 0`, `BUILD SUCCESS`).
-
-# 
-
-# \### Ciclo documentado como ejemplo (caso B2 - spare con bono)
-
-# 
-
-# \- \*\*RED:\*\* `docs/evidence/B2-red.png`, `docs/evidence/B2-red-2.png` (`expected: <70> but was: <0>`)
-
-# \- \*\*GREEN:\*\* `docs/evidence/B2-green.png`, `docs/evidence/B2-green-2.png` (`Tests run: 10, Failures: 0`)
-
-# 
-
-# \### Ejemplo de REFACTOR documentado
-
-# 
-
-# Tras el analisis de SonarQube se refactorizo el metodo `roll()` de `BowlingGame`, dividiendolo en metodos auxiliares privados (`ensureCurrentFrameExists`, `validateSecondRoll`, `updateFrameType`) para reducir su complejidad cognitiva de 18 a menos de 15, se elimino un campo no utilizado (`currentFrame`) y se reemplazo una expresion lambda por una referencia a metodo (`game::score`) en las pruebas. Los 22 tests se mantuvieron en verde durante todo el refactor.
-
-# 
-
-# \## 4. Cobertura de codigo (JaCoCo)
-
-# 
-
-# Se configuro `jacoco-maven-plugin` en `pom.xml` con una regla de verificacion (`check`) que exige minimo \*\*85% de cobertura de lineas\*\* y \*\*70% de cobertura de ramas\*\*, vinculada a la fase `verify` de Maven.
-
-# 
-
-# \- \*\*Antes\*\* (`docs/evidence/jacoco-antes.png`): al deshabilitar temporalmente las pruebas de `BowlingScorer`, la cobertura cae a \~70% de lineas / \~77% de ramas, y `mvn clean verify` falla con `BUILD FAILURE` (`Rule violated for bundle bowling-tdd: lines covered ratio is 0.70, but expected minimum is 0.85`).
-
-# \- \*\*Final\*\* (`docs/evidence/jacoco-final.png`): con la suite completa de 22 tests, la cobertura alcanza \*\*99.4% de lineas\*\* y cobertura alta de ramas, cumpliendo ampliamente el umbral exigido, con `BUILD SUCCESS`.
-
-# 
-
-# \## 5. Analisis estatico (SonarQube)
-
-# 
-
-Se levanto una instancia local de SonarQube Community (`sonarqube:26.9.0.129388-community`) mediante Docker Desktop, y se creo el proyecto `bowling-tdd`, analizado con `sonar-maven-plugin` ejecutando:
-mvn clean verify sonar:sonar -Dsonar.token=%SONAR\_TOKEN%
-
-
-===
-
-# El token de analisis se genero desde la interfaz de SonarQube y se paso unicamente como variable de entorno (`SONAR\_TOKEN`), nunca almacenado en archivos del repositorio.
-
-# 
-
-# \### Resultado inicial
-
-# 
-
-# `docs/evidence/sonarqube-inicial.png` — Quality Gate: \*\*Passed\*\*, pero con \*\*3 issues abiertos de Maintainability\*\* (Code Smells):
-
-# 
-
-# 1\. \*\*Alta severidad:\*\* complejidad cognitiva del metodo `roll()` de 18, superando el limite permitido de 15.
-
-# 2\. \*\*Media severidad:\*\* campo privado `currentFrame` declarado pero nunca utilizado.
-
-# 3\. \*\*Baja severidad:\*\* uso de una expresion lambda (`() -> game.score()`) donde correspondia una referencia a metodo (`game::score`).
-
-# 
-
-# \### Acciones correctivas
-
-# 
-
-# Se aplico un ciclo de REFACTOR (ver seccion 3) que dividio el metodo `roll()` en metodos auxiliares mas pequeños, elimino el campo sin uso y sustituyo la lambda por una referencia a metodo, sin alterar el comportamiento (22 tests siguieron en verde).
-
-# 
-
-# \### Resultado final
-
-# 
-
-# `docs/evidence/sonarqube-final.png` — Quality Gate: \*\*Passed\*\*, \*\*0 issues abiertos\*\* en Security, Reliability y Maintainability, \*\*0.0% de duplicaciones\*\*, \*\*99.4% de cobertura\*\*.
-
-# 
-
-# \## 6. Pull Requests
-
-# 
-
-# \- El desarrollo se realizo en la rama `feature/AngelKevin\_bowling`, creada a partir de `develop`.
-
-# \- Los cambios llegan a `develop` unicamente a traves de Pull Request (nunca mediante push directo).
-
-# \- Se agrego como colaborador del repositorio al profesor `MartinRapyd990558`, y se envio la notificacion por correo a `andres.cantor-u@escuelaing.edu.co` con el asunto `\[DOSW] Taller 2 - Angel Kevin`.
-
-# \- \*\*Pull Request:\*\* \_(pendiente de agregar el enlace una vez creado)\_
-
-# 
-
-# \## 7. Reflexion
-
-# 
-
-# \_(pendiente)\_
-
+El de la complejidad del método `roll()`. Los otros dos (el campo sin usar y la lambda) fueron correcciones casi cosméticas, pero este sí me hizo repensar cómo estaba organizado el método más importante del juego y separarlo en partes más claras.
