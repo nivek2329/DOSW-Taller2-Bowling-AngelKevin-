@@ -25,22 +25,39 @@ Cada funcionalidad se hizo primero escribiendo el test (que falla, RED), despué
 
 Test `noStrikesNoSpares_sumsAllPins`\: un juego sin ningún strike ni spare debe sumar directamente todos los pinos derribados (10 frames de 3\+4 \= 70 puntos).
 
-- **RED:** `docs/evidence/RED-CasoB2.png`, `docs/evidence/RED-CasoB2-2.png` — se rompió temporalmente el cálculo del bono de strike en `BowlingScorer`, y el test falló (`expected: <70> but was: <0>`, `BUILD FAILURE`).
-- **GREEN:** `docs/evidence/GREEN-CasoB2.png`, `docs/evidence/GREEN-CasoB2-2.png` — al revertir el cambio, los 22 tests vuelven a pasar (`Tests run: 22, Failures: 0`, `BUILD SUCCESS`).
-- **REFACTOR:** posteriormente, el método `roll()` de `BowlingGame` se refactorizó (ver sección de SonarQube) sin afectar el resultado de estos tests.
+**RED** — se rompió temporalmente el cálculo del bono de strike en `BowlingScorer`, y el test falló (`expected: <70> but was: <0>`, `BUILD FAILURE`):
+
+![RED \- test fallando](docs/evidence/RED-CasoB2.png)
+![RED \- test fallando (consola completa)](docs/evidence/RED-CasoB2-2.png)
+
+**GREEN** — al revertir el cambio, los 22 tests vuelven a pasar (`Tests run: 22, Failures: 0`, `BUILD SUCCESS`):
+
+![GREEN \- tests pasando](docs/evidence/GREEN-CasoB2.png)
+![GREEN \- tests pasando (consola completa)](docs/evidence/GREEN-CasoB2-2.png)
+
+**REFACTOR** — posteriormente, el método `roll()` de `BowlingGame` se refactorizó (ver sección de SonarQube) sin afectar el resultado de estos tests.
 
 ## 4\. JaCoCo
 
-- Antes: `docs/evidence/jacoco-antes.png` — cobertura de 70%, por debajo del mínimo exigido (85%), build en rojo.
-- Después: `docs/evidence/jacoco-final.png` — 99.4% de cobertura, build en verde.
+**Antes** — cobertura de 70%, por debajo del mínimo exigido (85%), build en rojo:
+
+![JaCoCo antes \- 70% cobertura, build failure](docs/evidence/jacoco-antes.png)
+
+**Después** — 99.4% de cobertura, build en verde:
+
+![JaCoCo final \- 99.4% cobertura, build success](docs/evidence/jacoco-final.png)
 
 Las pruebas que más subieron la cobertura fueron las de `BowlingScorerTest`, porque son las que recorren todas las combinaciones del cálculo de puntaje (spare, strike, strikes seguidos, juego perfecto), que es la parte del código con más caminos posibles.
 
 ## 5\. SonarQube
 
-`docs/evidence/sonarqube-final.png` — Quality Gate en Passed, 99.4% de cobertura, 0% de duplicación y 0 issues abiertos.
+Resultado final — Quality Gate en Passed, 99.4% de cobertura, 0% de duplicación y 0 issues abiertos:
 
-Al principio salieron 3 issues (capturado en `docs/evidence/sonarqube-inicial.png`): el método `roll()` estaba muy complejo, había un campo que no se usaba para nada, y un test usaba una lambda donde cabía mejor una referencia a método. Los tres se corrigieron.
+![SonarQube dashboard final \- Quality Gate Passed](docs/evidence/sonarqube-final.png)
+
+Al principio salieron 3 issues (el método `roll()` estaba muy complejo, había un campo que no se usaba para nada, y un test usaba una lambda donde cabía mejor una referencia a método). Los tres se corrigieron:
+
+![SonarQube dashboard inicial \- 3 issues de Maintainability](docs/evidence/sonarqube-inicial.png)
 
 ## 6\. Pull Requests
 
