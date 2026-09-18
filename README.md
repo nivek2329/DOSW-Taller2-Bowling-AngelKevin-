@@ -62,8 +62,8 @@ Al principio salieron 3 issues (el método `roll()` estaba muy complejo, había 
 ## 6\. Pull Requests
 
 | Enlace al PR | Fecha de merge | Módulo que cubre |
-| --- | --- | --- |
-| \[enlace al PR\] | \[fecha\] | Implementación completa de BowlTech (dominio, motor de juego, cálculo de puntaje, tests, JaCoCo y SonarQube) |
+|---|---|---|
+| https://github.com/nivek2329/DOSW-Taller2-Bowling-AngelKevin-/pull/1 | 18/09/2026 | Implementación completa de BowlTech (dominio, motor de juego, cálculo de puntaje, tests, JaCoCo y SonarQube) |
 
 ## 7\. Reflexión
 
